@@ -17,12 +17,12 @@ class Player
         @health > 0
     end
     def hit(opponent, cards)
-        if self.name=="computer"   
+        if self.name=="computer" 
             ind=rand(8)
         else
             ind=-1
             puts "GET CARD" 
-            ind=Integer(gets) 
+            ind=Integer(gets)
             if ind < 0
                ind =0
             elsif ind >7 
@@ -118,21 +118,31 @@ class Card
        "Card: #{title} Health: #{health} Power: #{power}" 
     end
 end
-def fight(p1, p2, c1, c2)
-    while p1.isAlive && p2.isAlive
-        p1.hit(p2, c1)
-        p2.hit(p1, c2)
+play='yes'
+step=0
+def fight(step, p1, p2, c1, c2)
+    play = 'yes'
+    if p1.isAlive && p2.isAlive
+        if step%2
+           p1.hit(p2, c1)
+        else
+           p2.hit(p1, c2)
+        end
         puts "RESULT" 
         show_info(p1, p2)
-        puts "SELECT" 
+        puts "SELECT"
     end
-    if p1.isAlive 
-        puts "#{p1.name} WON!" 
-    elsif p2.isAlive
-        puts "#{p2.name} WON!" 
-    else
+    if !p2.isAlive 
+        puts "#{p1.name} WON!"
+        play = '#{p1.name}'
+    elsif !p1.isAlive
+        puts "#{p2.name} WON!"
+        play = '#{p2.name}'
+    elsif !p1.isAlive && !p2.isAlive
         puts "TIE!"
+        play = 'TIE'
     end
+    return play
 end
 def show_card(*p) 
     p.each { |x| puts x} 
@@ -142,18 +152,24 @@ def show_info(*p)
 end
 card_p1=[]
 card_p2=[] 
-puts "CARDS" 
-8.times { card_p1 << Card.new} 
-8.times { card_p2 << Card.new}
-puts "PLAYER 1"
-card_p1.each {|x| show_card(x)} 
-puts "PLAYER 2"
-card_p2.each {|x| show_card(x)} 
 #initialize Players
 puts "PLAYERS INFO"
 p1 = Player.new("human", 100, 100)
 p2 = Player.new("computer", 100, 100)
-#show Player info
-show_info(p1, p2)
 puts "LETS FIGHT!"
-fight(p1, p2, card_p1, card_p2)
+while play == 'yes'
+    puts "*********"
+    puts "NEW CARDS" 
+    8.times { card_p1 << Card.new} 
+    8.times { card_p2 << Card.new}
+    puts "PLAYER 1"
+    card_p1.each {|x| show_card(x)} 
+    puts "PLAYER 2"
+    card_p2.each {|x| show_card(x)}
+    show_info(p1, p2)
+    play = fight(step, p1, p2, card_p1, card_p2)
+    card_p1=[]
+    card_p2=[]
+    step+=1
+end
+puts "THE END"
