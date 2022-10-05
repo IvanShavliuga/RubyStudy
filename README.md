@@ -4,7 +4,7 @@
 Как запускать
 ```
 
-docker build -t rubystudy
+docker build -t rubystudy .
 docker run -it rubystudy
 
 ```
